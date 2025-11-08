@@ -2,7 +2,7 @@ let table; //variabile che mi contiene il dataset
 let points = []; //array in cui salvo la posizione x e y di ogni vulcano
 
 let angleStep = 0.88; //mi dice di quanto pian piano si deve aprire la spirale 
-let radiusBase = 14; //distanza tra i punti 
+let radiusBase = 12; //distanza tra i punti 
 
 //nuova variabile per definire un hover 
 let hoveredIndex = -1; 
@@ -102,13 +102,13 @@ function colorLastEruption(code) {
     case "D":  return color(60, 20, 15);     // marrone bruciato
 
     
-    case "P":  return color(80, 80, 80);     // grigio medio-scuro (freddo)
-    case "Q":  return color(50, 45, 45);     // grigio-nero caldo (antracite)
+    case "P":  return color(149,95,32);     // marrone
+    case "Q":  return color(121,85,91);     // siena
 
   
-    case "U":  return color(40, 40, 40);     // nero chiaro
-    case "U1": return color(25, 25, 25);     // nero medio
-    case "U7": return color(10, 10, 10);     // nero profondo
+    case "U":  return color(80, 80, 80);     // grigio
+    case "U1": return color(40, 40, 40);     // nero medio
+    case "U7": return color(10, 10, 10);     // nero 
 
     
     case "?":       return color(255, 250, 180);  // giallo chiarissimo
@@ -200,12 +200,16 @@ function drawShapeForTypeSized(p, s)  {
 
     //croce spessa
     case "other / unknown":
-      strokeWeight(2);
-      stroke(255);
-      line(p.x - s*0.8, p.y - s*0.8, p.x + s*0.8, p.y + s*0.8);
-      line(p.x + s*0.8, p.y - s*0.8, p.x - s*0.8, p.y + s*0.8);
-      noStroke();
-      break;
+      //in questo caso per lo stroke usa il colore delle funzione sopra 
+    const col = colorLastEruption(p.last);
+    stroke(col);
+    strokeWeight(max(2, s * 0.25)); // scala lo spessore con la dimensione
+    strokeCap(ROUND);               // estremità arrotondate = più belle
+    line(p.x - s*0.8, p.y - s*0.8, p.x + s*0.8, p.y + s*0.8);
+    line(p.x + s*0.8, p.y - s*0.8, p.x - s*0.8, p.y + s*0.8);
+    noStroke(); // ripulisci per i disegni successivi
+    
+    break;
 
     // fallback se mai capita qualcos'altro
     default:
@@ -249,21 +253,103 @@ function drawTooltip(volcanoName, country) {
 
 
 function setup() {
-  createCanvas(windowWidth, 1500);
+  createCanvas(windowWidth, 1400);
   
   spiralLayout();
 
 }
 
 function draw() {
-  background (54,54,54); //sfondo
+  background (44,44,44); //sfondo
 
 //TITOLO "DATASET VULCANI"
+  textFont('Courier New');
   fill(248, 250, 252); // colore testo
   noStroke();
   textAlign(LEFT, TOP);
   textSize(20);
   text("DATASET VULCANI", 20, 20);
+
+  textSize(12);
+  text("LEGENDA", 20, 70);
+
+//LEGENDA//
+  textSize(14); //dimensione testo legenda 
+  fill(240);
+  textAlign(LEFT, TOP);
+  text("Ultima eruzione", 20, 90);
+  text("Tipo di vulcano", 180, 90);
+
+  //COLONNA COLORI//
+  let colorY = 115; //y di partenza della colonnina
+  let stepY = 20; //spazio tra una riga e l'altra 
+
+  let codes = ["D1", "D2", "D3", "D4", "D5", "D6","D7", "D","P","Q", "U", "U1", "U7", "?", "Unknown"];
+  //array con le etichette dei gruppi di eruzione che voglio mostrare 
+  //ordine Array uguale ordine di visualizzazione 
+  for (let i = 0; i < codes.length; i++) {
+    //ciclo per scorrere tutto l'array
+  let c = colorLastEruption(codes[i]);
+    //pallino accanto
+  fill(c);
+  noStroke();
+  circle(30, colorY + i * stepY, 12);
+    //testo//
+  fill(240);
+  textSize(12);
+  textAlign(LEFT, CENTER);
+  text(codes[i], 50, colorY + i * stepY);
+
+  //COLONNA FORME//
+  //variabibili legate alla posizione della colonna 
+  let formY = 115; //y iniziziale//
+  let formStepY = 20; //spazio tra una riga e la successiva
+  let formX = 180; //x di partenza della colonna 
+  
+  //caratteristiche del testo 
+  textSize(12);
+  fill(240);
+  textAlign(LEFT, CENTER);
+
+  // array con etichetta e disegno relativo
+  //array di coppie 
+  let forms = [
+  ["Stratovolcano", "rettangolo verticale"],
+  ["Shield volcano", "quadrato"],
+  ["Caldera", "cerchio"],
+  ["Cone", "triangolo + base tonda"],
+  ["Crater system", "esagono"],
+  ["Maars / Tuff ring", "ellisse bassa"],
+  ["Submarine volcano", "rombo"],
+  ["Subglacial", "rettangolo orizzontale"],
+  ["Other / Unknown", "croce"]
+  ];
+
+  //apro un ciclo for per ogni riga dell'array forms
+  for (let i = 0; i < forms.length; i++) {
+    let fy = formY + i * formStepY; //y della riga (y di partenza + la rigaxpasso)
+    let fx = formX+10; //x della forma 
+
+  // disegno una forma 
+  fill(220);
+  noStroke();
+  let p = {x: fx, y: fy, typeCategory: forms[i][0].toLowerCase()}; 
+  //fx e fy sono le due variabili che ho decsritto prima che mi definsico la posizione
+  //gli dico le forme da prendere 
+  //richiamo la funzione che disegna le forme in base alla mia categoria 
+  drawShapeForTypeSized(p, 6);
+  //6 è la scala (stesso ragionamento dell'hover)
+
+  // etichetta testuale
+  fill(240);
+  textSize(12);
+  text(forms[i][0], fx + 20, fy);
+  //etichetta
+}
+}
+
+
+
 
 //HOVER PER LEGGERE NOME E PAESE 
   hoveredIndex = -1; // reset della variabile 
@@ -295,7 +381,7 @@ function draw() {
     let c = colorLastEruption(p.last);
     fill(c);         // applico quel colore
     noStroke();
-    drawShapeForTypeSized(p, 8);
+    drawShapeForTypeSized(p, 6);
   }
 
   if (hoveredIndex !== -1) { //controllo se è su un vulcano
