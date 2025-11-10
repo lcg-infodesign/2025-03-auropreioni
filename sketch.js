@@ -24,8 +24,8 @@ function spiralLayout() {
   points = [];
   //voglio salvare tutte queste cordinate dentro un array che poi userò per disgenare 
   
-  let xC = width/2; //centro della spirale = centro del canvas
-  let yC = height/2; //stessa cosa per la y 
+  let xC = width/2+100; //centro della spirale = centro del canvas
+  let yC = height/2-20; //stessa cosa per la y 
 
   let rowCount = table.getRowCount(); //numero di rghe del mio dataset
   
@@ -152,17 +152,8 @@ function drawShapeForTypeSized(p, s)  {
       vertex(p.x,         p.y - s * 1.0);
       vertex(p.x - s*0.8, p.y + s * 0.4);
       vertex(p.x + s*0.8, p.y + s * 0.4);
-      endShape(CLOSE); //chiudo la forma 
-
-      // base arrotondata
-      arc(
-        p.x,
-        p.y + s * 0.4,
-        s * 1.6,
-        s * 0.5,
-        0,
-        PI
-      );
+      endShape(CLOSE); //chiudo la forma
+    
       break;
 
     //esagono
@@ -253,7 +244,7 @@ function drawTooltip(volcanoName, country) {
 
 
 function setup() {
-  createCanvas(windowWidth, 1400);
+  createCanvas(windowWidth, 1200);
   
   spiralLayout();
 
@@ -299,6 +290,8 @@ function draw() {
   textSize(12);
   textAlign(LEFT, CENTER);
   text(codes[i], 50, colorY + i * stepY);
+  }
+  
 
   //COLONNA FORME//
   //variabibili legate alla posizione della colonna 
@@ -346,7 +339,7 @@ function draw() {
   text(forms[i][0], fx + 20, fy);
   //etichetta
 }
-}
+
 
 
 
