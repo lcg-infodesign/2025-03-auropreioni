@@ -108,7 +108,7 @@ function colorLastEruption(code) {
   
     case "U":  return color(80, 80, 80);     // grigio
     case "U1": return color(30, 30, 30);     // nero medio
-    case "U7": return color(10, 10, 10);     // nero 
+    case "U7": return color(5, 5, 5);     // nero 
 
     
     case "?":       return color(255, 250, 180);  // giallo chiarissimo
