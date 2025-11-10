@@ -168,7 +168,7 @@ function drawShapeForTypeSized(p, s)  {
       endShape(CLOSE);
       break;
 
-    //ellisse larga e bassa
+    //ellisse larga 
     case "maars / tuff ring":
       ellipse(p.x, p.y, s * 1.8, s * 0.9);
       break;
@@ -294,7 +294,7 @@ function draw() {
   
 
   //COLONNA FORME//
-  //variabibili legate alla posizione della colonna 
+  //variabibili legate alla posizione della colonna nello spazio
   let formY = 115; //y iniziziale//
   let formStepY = 20; //spazio tra una riga e la successiva
   let formX = 180; //x di partenza della colonna 
